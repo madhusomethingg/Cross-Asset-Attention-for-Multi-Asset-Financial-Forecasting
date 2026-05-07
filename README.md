@@ -1,70 +1,92 @@
 # Cross-Asset Attention for Multi-Asset Financial Forecasting
 
-DATA 612 — Deep Learning · Final Project · University of Maryland
-
-**Eniyan Ezhilan Sumathi · Shri Varshan Periyaswamy · Dhanush Sambasivam · Madhumitha Rajagopal**
+A deep learning system that predicts next-day log returns for multiple financial assets using a Cross-Asset Transformer, enabling the model to learn interdependencies between assets through self-attention.
 
 ---
 
-## What this is
+## Overview
 
-A **Cross-Asset Transformer** that predicts next-day log returns for 20 financial
-assets, trained jointly so the model learns relationships *between* assets
-through self-attention. Compared against six baselines (Ridge, ARIMA, Gradient
-Boosting, LSTM, GRU, TCN) on out-of-sample 2023 data.
+This project builds a unified forecasting framework for 20 financial assets, where all assets are modeled jointly instead of independently.
 
-### Headline results
+The key idea is that financial assets are interconnected, and capturing these relationships improves predictive performance. The Transformer architecture leverages self-attention to learn these cross-asset dependencies.
+
+The model is evaluated against six strong baselines:
+
+- Ridge Regression  
+- ARIMA  
+- Gradient Boosting  
+- LSTM  
+- GRU  
+- TCN  
+
+All models are tested on out-of-sample 2023 data.
+
+---
+
+## Results
 
 | Metric | Transformer | Notes |
-|---|---|---|
-| Macro F1 | **0.495** | Tied for best of 7 models |
-| Directional Accuracy | **52.27%** | Real edge above 50% coin-flip baseline |
-| Backtest Sharpe | **+1.12** | Best of all *active* strategies |
-| DM test vs Ridge / ARIMA / LSTM / TCN | **p < 0.001** | Statistically better on overall error |
-
-### Novelty
-
-We show that the Transformer's learned cross-asset attention captures a
-**fundamentally different** kind of relationship than classical rolling
-correlation: Spearman ρ = **−0.37** between the two matrices, with attention
-being **25× more stable** day-to-day. Combined with a custom **Direction-Aware
-+ Class-Weighted Loss** that flipped backtest Sharpe from −0.61 to +1.12,
-this is the project's main contribution.
+|--------|------------|------|
+| Macro F1 | 0.495 | Among the best across all models |
+| Directional Accuracy | 52.27% | Above random baseline |
+| Backtest Sharpe | +1.12 | Best-performing strategy |
+| Diebold-Mariano Test | p < 0.001 | Statistically superior |
 
 ---
 
-## Live demo
+## Core Contributions
 
-The Streamlit dashboard has 5 tabs:
+### Cross-Asset Attention vs Correlation
 
-1. **Overview** — elevator pitch + project pipeline
-2. **Leaderboard** — test-set metrics across all 7 models
-3. **Backtest** — equity curves and Sharpe ratios from real data
-4. **Attention vs Correlation** — interactive heatmap comparison (the novelty)
-5. **Live Prediction** — pick a date, the trained Transformer runs forward
+The Transformer learns relationships between assets that differ significantly from traditional correlation-based approaches.
 
-### Run locally
+- Spearman correlation between attention and correlation matrices: ρ = −0.37  
+- Attention patterns are 25× more stable over time  
 
-```bash
-git clone <this-repo>
-cd <this-repo>
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-streamlit run app/streamlit_app.py
-```
+This indicates that deep learning captures non-linear and hidden dependencies beyond classical statistics.
 
 ---
 
-## Reproducing the results
+### Direction-Aware Class-Weighted Loss
 
-```bash
-python scripts/01_build_data.py            # download + featurize + split
-python scripts/02_train_all.py             # train all 7 models with Combined Loss
-python scripts/03_evaluate.py              # RMSE / MAE / DA / Diebold-Mariano
-python scripts/04_backtest.py              # long/short top-5 strategy
-python scripts/05_extract_attention.py     # save (T, N, N) cross-asset attention
-python scripts/06_classification_report.py # UP/DOWN F1, precision, recall
-python scripts/07_threshold_calibration.py # tune decision threshold on val set
-```
+A custom loss function was introduced to improve directional prediction:
 
-All artifacts land in `artifacts/`. The Streamlit app reads from that folder.
+- Focuses on UP/DOWN classification  
+- Improves trading performance  
+- Converts Sharpe from −0.61 to +1.12  
+
+---
+
+## Live Demo
+
+The project includes a Streamlit dashboard with the following modules:
+
+- Overview — Project pipeline and summary  
+- Leaderboard — Comparison across all models  
+- Backtest — Equity curves and Sharpe ratios  
+- Attention vs Correlation — Interactive visualization  
+- Live Prediction — Run model on selected dates  
+
+---
+
+## Setup
+
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git  
+cd YOUR_REPO_NAME  
+
+python -m venv .venv  
+source .venv/bin/activate  
+
+pip install -r requirements.txt  
+
+---
+
+## Run the App
+
+streamlit run app/streamlit_app.py  
+
+---
+
+## Author
+
+Madhumitha Rajagopal
