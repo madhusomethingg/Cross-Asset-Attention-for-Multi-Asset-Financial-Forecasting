@@ -1,0 +1,20 @@
+Transformer -- Calibrated Test Set Classification Report
+============================================================
+
+Calibrated threshold: -0.000831
+(threshold chosen on validation set to maximise macro F1)
+
+              precision    recall  f1-score   support
+
+        DOWN     0.3269    0.1781    0.2306      1898
+          UP     0.6671    0.8179    0.7348      3822
+
+    accuracy                         0.6056      5720
+   macro avg     0.4970    0.4980    0.4827      5720
+weighted avg     0.5542    0.6056    0.5675      5720
+
+
+Confusion matrix (rows=actual, cols=predicted):
+             pred_DOWN  pred_UP
+actual_DOWN        338     1560
+actual_UP          696     3126

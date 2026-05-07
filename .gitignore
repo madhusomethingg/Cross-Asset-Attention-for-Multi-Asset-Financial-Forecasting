@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+
+# Notebooks scratch
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IMPORTANT: artifacts/ is INCLUDED in this repo so Streamlit Cloud can read
+# the trained model + predictions + attention files. Total size is under 5 MB,
+# well within GitHub's limits. If you ever need to ignore artifacts (e.g. to
+# share the code without weights), uncomment the lines below:
+#
+# artifacts/data/
+# artifacts/models/
+# artifacts/predictions/
+# artifacts/attention/
+# artifacts/figures/

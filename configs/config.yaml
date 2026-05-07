@@ -1,0 +1,119 @@
+# =============================================================================
+# DATA 612 — Cross-Asset Transformer Project Config
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Data
+# -----------------------------------------------------------------------------
+data:
+  # Asset universe (20 tickers — chosen for diversification across asset classes)
+  tickers:
+    # Large-cap US equities
+    - AAPL
+    - MSFT
+    - AMZN
+    - JPM
+    - GOOGL
+    - META
+    - NVDA
+    - BRK-B
+    # Sector ETFs
+    - XLK
+    - XLF
+    - XLE
+    - XLV
+    - XLI
+    # Broad market ETFs
+    - SPY
+    - QQQ
+    - IWM
+    # Macro / defensive
+    - TLT
+    - GLD
+    # Crypto
+    - BTC-USD
+    - ETH-USD
+
+  start_date: '2018-01-01'
+  end_date:   '2023-12-31'
+
+  # Chronological split
+  train_frac: 0.70
+  val_frac:   0.15
+  # test_frac inferred as 1 - train - val
+
+  # Sliding window
+  lookback: 40
+
+# -----------------------------------------------------------------------------
+# Training (shared across deep learning models)
+# -----------------------------------------------------------------------------
+training:
+  batch_size: 64
+  max_epochs: 80
+  lr: 0.0001          # lowered from 3e-4 to slow learning and reduce overfit
+  weight_decay: 0.0005   # raised from 1e-5 to penalize large weights
+  grad_clip: 1.0
+  early_stopping_patience: 12
+  seed: 42
+
+# -----------------------------------------------------------------------------
+# Loss function (applied to all DL models)
+#
+# 'combined' = Direction-Aware MSE + Class-Weighted (DOWN-day upweighting)
+# This loss is designed to improve directional accuracy and macro F1 on
+# imbalanced bullish/bearish data, which standard MSE doesn't address.
+#
+# Available: 'mse' | 'direction' | 'weighted' | 'combined'
+# -----------------------------------------------------------------------------
+loss:
+  name: combined
+  lambda_dir: 5.0      # weight on the sign-mismatch penalty
+  down_weight: 2.0     # multiplier on DOWN-day samples
+
+# -----------------------------------------------------------------------------
+# Model-specific
+# -----------------------------------------------------------------------------
+models:
+  transformer:
+    d_model: 96         # mid-size: bigger than the previous 64, smaller than original 128
+    n_heads: 4
+    n_layers: 3         # back to 3 — needed for capacity given the new loss
+    d_ff: 192
+    dropout: 0.25       # strong reg, slightly less than 0.3
+
+  lstm:
+    hidden_dim: 96       # slightly smaller too
+    n_layers: 2
+    dropout: 0.3
+
+  gru:
+    hidden_dim: 96
+    n_layers: 2
+    dropout: 0.3
+
+  tcn:
+    channels: [48, 48, 48, 48]   # slightly smaller
+    kernel_size: 3
+    dropout: 0.3
+
+  ridge:
+    alpha: 10.0          # higher alpha to handle ill-conditioned panel design matrix
+
+  xgboost:
+    n_estimators: 400
+    max_depth: 5
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+
+  arima:
+    order: [1, 0, 1]   # ARMA(1,1) on returns — already stationary
+
+# -----------------------------------------------------------------------------
+# Backtest
+# -----------------------------------------------------------------------------
+backtest:
+  top_k: 5            # long top-k assets, short bottom-k each day
+  cost_bps: 1.0       # 1 basis point round-trip transaction cost
+  ann_factor: 252     # trading days per year

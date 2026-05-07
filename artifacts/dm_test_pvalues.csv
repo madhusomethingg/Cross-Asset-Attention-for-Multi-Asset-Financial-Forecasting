@@ -1,0 +1,7 @@
+baseline,DM_stat,p_value,verdict
+ridge,-7.017950904615018,2.5124347047267293e-12,transformer better
+arima,-19.856487118754014,0.0,transformer better
+xgboost,-3.3394923100631573,0.0008446878705499206,transformer better
+lstm,-23.3905854017943,0.0,transformer better
+gru,2.624707854330835,0.008695399858959618,baseline better
+tcn,-22.102288422866287,0.0,transformer better

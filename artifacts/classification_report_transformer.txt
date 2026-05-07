@@ -1,0 +1,17 @@
+Transformer -- Test Set Classification Report
+============================================================
+
+              precision    recall  f1-score   support
+
+        DOWN     0.3251    0.3130    0.3189      1898
+          UP     0.6650    0.6774    0.6712      3822
+
+    accuracy                         0.5565      5720
+   macro avg     0.4951    0.4952    0.4950      5720
+weighted avg     0.5522    0.5565    0.5543      5720
+
+
+Confusion matrix (rows=actual, cols=predicted):
+             pred_DOWN  pred_UP
+actual_DOWN        594     1304
+actual_UP         1233     2589
